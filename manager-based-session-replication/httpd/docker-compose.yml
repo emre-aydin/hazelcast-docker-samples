@@ -1,0 +1,32 @@
+version: '2.1'
+services:
+  lb:
+    image: httpd:2.4.29
+    ports:
+     - "8080:80"
+    links:
+     - tomcatServerOne:tomcat1
+     - tomcatServerTwo:tomcat2
+    volumes:
+     - ./httpd.conf:/usr/local/apache2/conf/httpd.conf
+     - ./httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
+  tomcatServerOne:
+    image: tomcat:8.5-jre8
+    ports:
+     - "8080"
+    volumes:
+     - ../target/example.war:/usr/local/tomcat/webapps/example.war
+     - ./hazelcast-tomcat85-sessionmanager-1.1.1.jar:/usr/local/tomcat/lib/hazelcast-tomcat85-sessionmanager-1.1.1.jar
+     - ./hazelcast-all-3.8.3.jar:/usr/local/tomcat/lib/hazelcast-all-3.8.3.jar
+     - ./server-1.xml:/usr/local/tomcat/conf/server.xml
+     - ./context.xml:/usr/local/tomcat/conf/context.xml
+  tomcatServerTwo:
+    image: tomcat:8.5-jre8
+    ports:
+     - "8080"
+    volumes:
+     - ../target/example.war:/usr/local/tomcat/webapps/example.war
+     - ./hazelcast-tomcat85-sessionmanager-1.1.1.jar:/usr/local/tomcat/lib/hazelcast-tomcat85-sessionmanager-1.1.1.jar
+     - ./hazelcast-all-3.8.3.jar:/usr/local/tomcat/lib/hazelcast-all-3.8.3.jar
+     - ./server-2.xml:/usr/local/tomcat/conf/server.xml
+     - ./context.xml:/usr/local/tomcat/conf/context.xml
